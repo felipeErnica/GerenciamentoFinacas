@@ -13,7 +13,6 @@ public class PastaContabil implements ToDTO<PastaDTO>, Cloneable {
     private String nome;
     private String caminhoPasta;
     private long contaId;
-    private ContaBancaria contaBancaria;
 
     public PastaContabil() {}
 
@@ -31,20 +30,17 @@ public class PastaContabil implements ToDTO<PastaDTO>, Cloneable {
 
     public ContaBancaria getContaBancaria() {
         try {
-            if (contaBancaria == null) contaBancaria = contaDAO.findById(contaId).orElse(null);
-        } catch (FetchFailException ignored) {}
-        return contaBancaria;
+            return new ContaDAO().findById(contaId).orElse(null);
+        } catch (FetchFailException ignored) {
+            return null;
+        }
     }
 
     public void setId(long id) { this.id = id; }
     public void setNome(String nome) { this.nome = nome; }
     public void setCaminhoPasta(String caminhoPasta) { this.caminhoPasta = caminhoPasta; }
     public void setContaId(long contaId) { this.contaId = contaId; }
-
-    public void setContaBancaria(ContaBancaria contaBancaria) {
-        this.contaBancaria = contaBancaria;
-        this.contaId = contaBancaria != null ? contaBancaria.getId() : 0;
-    }
+    public void setContaBancaria(ContaBancaria contaBancaria) { this.contaId = contaBancaria != null ? contaBancaria.getId() : 0; }
 
     @Override
     public String toString() { return nome; }

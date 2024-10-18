@@ -15,16 +15,13 @@ import java.time.LocalDate;
 public class Duplicata implements ToDTO<DuplicataDTO> {
 
     private long id;
-    private DocumentoFiscal documento;
     private long documentoId;
     private int numDup;
     private LocalDate dataVencimento;
     private TipoPagamento tipoPagamento;
     private double valor;
     private String boletoCaminho;
-    private DadoBancario dadoBancario;
     private Long pixId;
-    private ChavePix pix;
     private Long dadoId;
     private boolean isPayed;
 
@@ -45,26 +42,26 @@ public class Duplicata implements ToDTO<DuplicataDTO> {
 
     public DocumentoFiscal getDocumento() {
         try {
-            if (documento == null) documento = new DocumentoDAO().findById(documentoId).orElse(null);
-        } catch (FetchFailException ignored) {
+            return new DocumentoDAO().findById(documentoId).orElse(null);
+        } catch (FetchFailException e) { 
+            return null;
         }
-        return documento;
     }
 
     public DadoBancario getDadoBancario() {
         try {
-            if (dadoBancario == null && dadoId != null) dadoBancario = new DadoDAO().findById(dadoId).orElse(null);
-        } catch (FetchFailException ignored) {
+            return new DadoDAO().findById(dadoId).orElse(null);
+        } catch (FetchFailException e) { 
+            return null;
         }
-        return dadoBancario;
     }
 
     public ChavePix getPix() {
         try {
-            if (pix == null && pixId != null) pix = new PixDAO().findById(pixId).orElse(null);
-        } catch (FetchFailException ignored) {
+            return new PixDAO().findById(pixId).orElse(null);
+        } catch (FetchFailException e) {
+            return null;
         }
-        return pix;
     }
 
     public long getId() { return id; }
@@ -78,21 +75,9 @@ public class Duplicata implements ToDTO<DuplicataDTO> {
     public Long getDadoId() { return dadoId; }
     public Long getPixId() { return pixId; }
 
-    public void setDocumento(DocumentoFiscal documento) {
-        this.documento = documento;
-        this.documentoId = documento != null ? documento.getId() : 0;
-    }
-
-    public void setDadoBancario(DadoBancario dadoBancario) {
-        this.dadoBancario = dadoBancario;
-        this.dadoId = dadoBancario != null ? dadoBancario.getId() : null;
-    }
-
-    public void setPix(ChavePix pix) {
-        this.pix = pix;
-        this.pixId = pix != null ? pix.getId() : null;
-    }
-
+    public void setDocumento(DocumentoFiscal documento) { this.documentoId = documento != null ? documento.getId() : 0; }
+    public void setDadoBancario(DadoBancario dadoBancario) { this.dadoId = dadoBancario != null ? dadoBancario.getId() : null; }
+    public void setPix(ChavePix pix) { this.pixId = pix != null ? pix.getId() : null; }
     public void setNumDup(int numDup) { this.numDup = numDup; }
     public void setDataVencimento(LocalDate dataVencimento) { this.dataVencimento = dataVencimento; }
     public void setTipoPagamento(TipoPagamento tipoPagamento) { this.tipoPagamento = tipoPagamento; }
@@ -106,6 +91,7 @@ public class Duplicata implements ToDTO<DuplicataDTO> {
 
     @Override
     public String toString() {
+        DadoBancario dadoBancario = getDadoBancario();
         final StringBuilder sb = new StringBuilder("Duplicata{");
         sb.append("id=").append(id);
         sb.append(", parcela=").append(numDup);

@@ -13,11 +13,8 @@ public class DadoBancario implements ToDTO<DadoDTO>, Cloneable {
 
     private long id;
     private String agencia;
-    private Banco banco;
     private String numeroConta;
     private Long pixId;
-    private ChavePix chavePix;
-    private Contato contato;
     private long bancoId;
     private long contatoId;
 
@@ -41,28 +38,25 @@ public class DadoBancario implements ToDTO<DadoDTO>, Cloneable {
 
     public ChavePix getChavePix() {
         try {
-            if (chavePix == null && pixId != null) this.chavePix = new PixDAO().findById(pixId).orElse(null);
-            return chavePix;
+            return new PixDAO().findById(pixId).orElse(null);
         } catch (FetchFailException e) {
-            return chavePix;
+            return null;
         }
     }
 
     public Contato getContato() {
         try {
-            if (contato == null) this.contato = new ContatoDAO().findById(contatoId).orElse(null);
-            return contato;
+            return new ContatoDAO().findById(contatoId).orElse(null);
         } catch (FetchFailException e) {
-            return contato;
+            return null;
         }
     }
 
     public Banco getBanco() {
         try {
-            if (banco == null) this.banco = new BancoDAO().findById(bancoId).orElse(null);
-            return banco;
+            return new BancoDAO().findById(bancoId).orElse(null);
         } catch (FetchFailException e) {
-            return banco;
+            return null;
         }
     }
 
@@ -72,21 +66,9 @@ public class DadoBancario implements ToDTO<DadoDTO>, Cloneable {
     public void setPixId(Long pixId) { this.pixId = pixId; }
     public void setBancoId(long bancoId) { this.bancoId = bancoId; }
     public void setContatoId(long contatoId) { this.contatoId = contatoId; }
-
-    public void setChavePix(ChavePix chavePix) {
-        this.chavePix = chavePix;
-        pixId = chavePix != null ? chavePix.getId() : null;
-    }
-
-    public void setContato(Contato contato) {
-        this.contato = contato;
-        this.contatoId = contato != null ? contato.getId() : 0;
-    }
-
-    public void setBanco(Banco banco) {
-        this.banco = banco;
-        this.bancoId = banco != null ? banco.getId() : 0;
-    }
+    public void setChavePix(ChavePix chavePix) { pixId = chavePix != null ? chavePix.getId() : null; }
+    public void setContato(Contato contato) { this.contatoId = contato != null ? contato.getId() : 0; }
+    public void setBanco(Banco banco) { this.bancoId = banco != null ? banco.getId() : 0; }
 
     public void addChavePix(ChavePix chavePix) {
         setChavePix(chavePix);

@@ -10,7 +10,6 @@ public class ContaBancaria implements ToDTO<ContaDTO> {
     private long id;
     private String nomeConta;
     private String agencia;
-    private Banco banco;
     private long bancoId;
     private String numeroConta;
 
@@ -32,23 +31,21 @@ public class ContaBancaria implements ToDTO<ContaDTO> {
 
     public Banco getBanco() {
         try {
-            if (banco == null) this.banco = new BancoDAO().findById(bancoId).orElse(null);
-        } catch (FetchFailException ignored) {}
-        return banco;
+            return new BancoDAO().findById(bancoId).orElse(null);
+        } catch (FetchFailException e) {
+            return null;
+        }
     }
 
     public void setId(long id) { this.id = id; }
     public void setNomeConta(String nomeConta) { this.nomeConta = nomeConta; }
     public void setAgencia(String agencia) { this.agencia = agencia; }
     public void setNumeroConta(String numeroConta) { this.numeroConta = numeroConta; }
-
-    public void setBanco(Banco banco) {
-        this.banco = banco;
-        this.bancoId = banco != null ? banco.getId() : 0;
-    }
+    public void setBanco(Banco banco) { this.bancoId = banco != null ? banco.getId() : 0; }
 
     @Override
     public String toString() {
+        Banco banco = getBanco();
         return (getBanco().getApelidoBanco().isEmpty() ? banco.getNomeBanco() : banco.getApelidoBanco()) +
                 " AG:" + agencia +
                 " CC:" + numeroConta;

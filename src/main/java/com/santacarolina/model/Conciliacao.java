@@ -12,9 +12,7 @@ public class Conciliacao implements ToDTO<ConciliacaoDTO> {
     private long id;
     private TipoMovimento tipoMovimento;
     private Long duplicataId;
-    private Duplicata duplicata;
     private long extratoId;
-    private Extrato extrato;
 
     public Conciliacao (ConciliacaoDTO dto) {
         this.id = dto.getId();
@@ -23,14 +21,14 @@ public class Conciliacao implements ToDTO<ConciliacaoDTO> {
         this.extratoId = dto.getExtratoId();
     }
 
-    public Conciliacao(Duplicata duplicata, Extrato extrato) {
-        this.duplicata = duplicata;
-        this.extrato = extrato;
+    public Conciliacao(long extratoId, long duplicataId) {
+        this.duplicataId = duplicataId;
+        this.extratoId = extratoId;
         this.tipoMovimento = TipoMovimento.COMUM;
     }
 
-    public Conciliacao(Extrato extrato, TipoMovimento tipoMovimento) {
-        this.extrato = extrato;
+    public Conciliacao(long extratoId, TipoMovimento tipoMovimento) {
+        this.extratoId = extratoId;
         this.tipoMovimento = tipoMovimento;
     }
 
@@ -43,27 +41,22 @@ public class Conciliacao implements ToDTO<ConciliacaoDTO> {
 
     public Duplicata getDuplicata() {
         try {
-            if (duplicata == null && duplicataId != null) duplicata = new DuplicataDAO().findById(duplicataId).orElse(null);
-        } catch (FetchFailException ignored) {}
-        return duplicata;
+            return new DuplicataDAO().findById(duplicataId).orElse(null);
+        } catch (FetchFailException e) {
+            return null;
+        }
     }
 
     public Extrato getExtrato() {
         try {
-            if (extrato == null) extrato = new ExtratoDAO().findById(extratoId).orElse(null);
-        } catch (FetchFailException ignored) {}
-        return extrato; 
+            return new ExtratoDAO().findById(extratoId).orElse(null);
+        } catch (FetchFailException e) {
+            return null; 
+        }
     }
 
-    public void setDuplicata(Duplicata duplicata) {
-        this.duplicata = duplicata;
-        this.duplicataId = duplicata != null ? duplicata.getId() : null;
-    }
-
-    public void setExtrato(Extrato extrato) {
-        this.extrato = extrato;
-        this.extratoId = extrato != null ? extrato.getId() : 0;
-    }
+    public void setDuplicata(Duplicata duplicata) { this.duplicataId = duplicata != null ? duplicata.getId() : null; }
+    public void setExtrato(Extrato extrato) { this.extratoId = extrato != null ? extrato.getId() : 0; }
 
     @Override
     public ConciliacaoDTO toDTO () { return new ConciliacaoDTO(this); }

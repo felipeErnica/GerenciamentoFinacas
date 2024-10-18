@@ -21,10 +21,8 @@ public class DocumentoFiscal implements Cloneable, Serializable, ToDTO<Documento
     private long id;
     private Long numDoc;
     private TipoDoc tipoDoc;
-    private Contato emissor;
     private long emissorId;
     private String caminho;
-    private PastaContabil pastaContabil;
     private long pastaId;
     private double valor;
     private LocalDate dataEmissao;
@@ -60,26 +58,26 @@ public class DocumentoFiscal implements Cloneable, Serializable, ToDTO<Documento
 
     public Contato getEmissor() {
         try {
-            if (emissor == null) emissor = new ContatoDAO().findById(emissorId).orElse(null);
-        } catch (FetchFailException ignored) {
+            return new ContatoDAO().findById(emissorId).orElse(null);
+        } catch (FetchFailException ignored) { 
+            return null;
         }
-        return emissor;
     }
 
     public PastaContabil getPastaContabil() {
         try {
-            if (pastaContabil == null) pastaContabil = new PastaDAO().findById(pastaId).orElse(null);
-        } catch (FetchFailException ignored) {
+            return new PastaDAO().findById(pastaId).orElse(null);
+        } catch (FetchFailException e) {
+            return null; 
         }
-        return pastaContabil;
     }
 
     public List<Duplicata> getDuplicatas() {
         try {
-            if (duplicatas == null) duplicatas = new DuplicataDAO().findByDoc(this);
-        } catch (FetchFailException ignored) {
+            return new DuplicataDAO().findByDoc(this);
+        } catch (FetchFailException e) {
+            return null;
         }
-        return duplicatas;
     }
 
     public List<Produto> getProdutos() {
@@ -101,16 +99,8 @@ public class DocumentoFiscal implements Cloneable, Serializable, ToDTO<Documento
     public void setFluxoCaixa(FluxoCaixa fluxoCaixa) { this.fluxoCaixa = fluxoCaixa; }
     public void setDuplicatas(List<Duplicata> duplicatas) { this.duplicatas = duplicatas; }
     public void setProdutos(List<Produto> produtos) { this.produtos = produtos; }
-
-    public void setEmissor(Contato emissor) {
-        this.emissor = emissor;
-        this.emissorId = emissor != null ? emissor.getId() : 0;
-    }
-
-    public void setPastaContabil(PastaContabil pastaContabil) {
-        this.pastaContabil = pastaContabil;
-        pastaId = pastaContabil != null ? pastaContabil.getId() : 0;
-    }
+    public void setEmissor(Contato emissor) { this.emissorId = emissor != null ? emissor.getId() : 0; }
+    public void setPastaContabil(PastaContabil pastaContabil) { pastaId = pastaContabil != null ? pastaContabil.getId() : 0; }
 
     public void addProduto(Produto produto){
         if (produtos == null) produtos = new ArrayList<>();
@@ -151,6 +141,7 @@ public class DocumentoFiscal implements Cloneable, Serializable, ToDTO<Documento
 
     @Override
     public String toString() {
+        Contato emissor = getEmissor();
         StringBuilder sb = new StringBuilder(tipoDoc != null ? tipoDoc.toString() : "");
         if (numDoc != null) sb.append(" - Número: ").append(numDoc);
         if (emissor != null) sb.append(" - Emissor: ").append(emissor);

@@ -15,9 +15,7 @@ public class ChavePix implements ToDTO<PixDTO>, Cloneable {
 
     private long id;
     private Long dadoId;
-    private DadoBancario dadoBancario;
     private long contatoId;
-    private Contato contato;
     private TipoPix tipoPix;
     private String chave;
 
@@ -39,17 +37,18 @@ public class ChavePix implements ToDTO<PixDTO>, Cloneable {
 
     public Contato getContato() {
         try {
-            if (contato == null) this.contato = new ContatoDAO().findById(contatoId).orElse(null);
-        } catch (FetchFailException ignored) {}
-        return contato;
+            return new ContatoDAO().findById(contatoId).orElse(null);
+        } catch (FetchFailException ignored) {
+            return null;
+        }
     }
 
     public DadoBancario getDadoBancario() {
         try {
-            if (dadoBancario == null && dadoId != null) this.dadoBancario = new DadoDAO().findById(dadoId).orElse(null);
-            return dadoBancario;
-        } catch (FetchFailException ignored) {}
-        return dadoBancario;
+            return new DadoDAO().findById(dadoId).orElse(null);
+        } catch (FetchFailException ignored) {
+            return null;
+        }
     }
 
     public boolean isInvalidFormat() {
@@ -63,16 +62,8 @@ public class ChavePix implements ToDTO<PixDTO>, Cloneable {
 
     public void setId(long id) { this.id = id; }
     public void setTipoPix(TipoPix tipoPix) { this.tipoPix = tipoPix; }
-
-    public void setContato(Contato contato) {
-        this.contato = contato;
-        this.contatoId = contato != null ? contato.getId() : 0;
-    }
-
-    public void setDadoBancario(DadoBancario dadoBancario) {
-        this.dadoBancario = dadoBancario;
-        this.dadoId = dadoBancario != null ? dadoBancario.getId() : null;
-    }
+    public void setContato(Contato contato) { this.contatoId = contato != null ? contato.getId() : 0; }
+    public void setDadoBancario(DadoBancario dadoBancario) { this.dadoId = dadoBancario != null ? dadoBancario.getId() : null; }
 
     public void setChave(String chave) {
         if (tipoPix != null && !StringUtils.isBlank(chave)) {
@@ -87,7 +78,6 @@ public class ChavePix implements ToDTO<PixDTO>, Cloneable {
         final StringBuffer sb = new StringBuffer("ChavePix{");
         sb.append("id=").append(id);
         sb.append(", dadoId=").append(dadoId);
-        sb.append(", contato=").append(contato);
         sb.append(", tipoPix=").append(tipoPix);
         sb.append(", chave='").append(chave).append('\'');
         sb.append('}');
@@ -110,8 +100,6 @@ public class ChavePix implements ToDTO<PixDTO>, Cloneable {
     public ChavePix clone() {
         ChavePix pix = new ChavePix();
         pix.setId(id);
-        pix.setDadoBancario(dadoBancario);
-        pix.setContato(contato);
         pix.setTipoPix(tipoPix);
         pix.setChave(chave);
         return pix;

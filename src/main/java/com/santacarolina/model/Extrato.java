@@ -1,7 +1,6 @@
 package com.santacarolina.model;
 
 import com.santacarolina.dao.ContaDAO;
-import com.santacarolina.dao.ContatoDAO;
 import com.santacarolina.dto.ExtratoDTO;
 import com.santacarolina.exceptions.FetchFailException;
 import com.santacarolina.interfaces.ToDTO;
@@ -14,7 +13,6 @@ public class Extrato implements ToDTO<ExtratoDTO> {
     private long id;
     private LocalDate dataTransacao;
     private long contaId;
-    private ContaBancaria contaBancaria;
     private String catBancaria;
     private String descricao;
     private double valor;
@@ -44,10 +42,9 @@ public class Extrato implements ToDTO<ExtratoDTO> {
 
     public ContaBancaria getContaBancaria() {
         try {
-            if (contaBancaria == null) contaBancaria = new ContaDAO().findById(contaId).orElse(null);
-            return contaBancaria;
+            return new ContaDAO().findById(contaId).orElse(null);
         } catch (FetchFailException e) {
-            return contaBancaria;
+            return null;
         }
     }
 
@@ -58,11 +55,7 @@ public class Extrato implements ToDTO<ExtratoDTO> {
     public void setValor(double valor) { this.valor = valor; }
     public void setConciliated(boolean conciliated) { isConciliated = conciliated; }
     public void setConciliacaoList(List<Conciliacao> conciliacaoList) { this.conciliacaoList = conciliacaoList; }
-
-    public void setContaBancaria(ContaBancaria contaBancaria) {
-        this.contaBancaria = contaBancaria;
-        this.contaId = contaBancaria != null ? contaBancaria.getId() : 0;
-    }
+    public void setContaBancaria(ContaBancaria contaBancaria) { this.contaId = contaBancaria != null ? contaBancaria.getId() : 0; }
 
     @Override
     public ExtratoDTO toDTO() { return new ExtratoDTO(this); }

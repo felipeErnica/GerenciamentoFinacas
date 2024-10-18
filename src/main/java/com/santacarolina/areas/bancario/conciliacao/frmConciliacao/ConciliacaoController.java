@@ -96,7 +96,7 @@ public class ConciliacaoController implements Controller {
         extrato.setConciliated(true);
         extratoDao.save(extrato);
 
-        Conciliacao conciliacao = new Conciliacao(duplicata, extrato);
+        Conciliacao conciliacao = new Conciliacao(duplicata.getId(), extrato.getId());
         dao.save(conciliacao);
         model.requeryTables();
     }
@@ -113,7 +113,7 @@ public class ConciliacaoController implements Controller {
             extrato.setConciliated(true);
             extratoList.add(extrato);
 
-            Conciliacao conciliacao = new Conciliacao(duplicata, extrato);
+            Conciliacao conciliacao = new Conciliacao(duplicata.getId(), extrato.getId());
             conciliacaoList.add(conciliacao);
         }
 
@@ -133,7 +133,7 @@ public class ConciliacaoController implements Controller {
         for (int dupRow : dupRows) {
             Duplicata dup = model.getDuplicata(dupRow);
             dup.setPayed(true);
-            Conciliacao conciliacao = new Conciliacao(dup, extrato);
+            Conciliacao conciliacao = new Conciliacao(dup.getId(), extrato.getId());
             conciliacaoList.add(conciliacao);
             listDup.add(dup);
         }
